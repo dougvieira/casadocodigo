@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -45,7 +47,10 @@ public class ProdutosController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto, BindingResult result, RedirectAttributes redirectAttributes){
+	//limpa o cache
+	@CacheEvict(value="produtosHome", allEntries=true)
+	public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto,
+			BindingResult result, RedirectAttributes redirectAttributes){
 		System.out.println(sumario.getOriginalFilename());
 		
 		if(result.hasErrors()){
@@ -55,7 +60,8 @@ public class ProdutosController {
 		String path = fileSaver.write("arquivoSumario", sumario);
 		produto.setSumarioPath(path);
 		produtodao.gravar(produto);
-		redirectAttributes.addFlashAttribute("sucesso", "Produto Cadastrado com Sucesso");
+		redirectAttributes.addFlashAttribute("sucesso",
+				"Produto Cadastrado com Sucesso");
 		return new ModelAndView("redirect:produtos");
 	}
 	
@@ -76,4 +82,10 @@ public class ProdutosController {
 		
 		return modelAndView;
 	}
+	
+//	@RequestMapping("/{id}")
+//	@ResponseBody
+//	public Produto detalheJson(@PathVariable("id") Integer id){
+//		return produtodao.find(id);
+//	}
 }

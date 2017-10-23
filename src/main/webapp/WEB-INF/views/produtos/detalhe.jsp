@@ -31,7 +31,7 @@
 
 	<header id="layout-header">
 		<div class="clearfix container">
-			<a href="/" id="logo">
+			<a href="${s:mvcUrl('HC#index').build() }" id="logo">
 			</a>
 			<div id="header-content">
 				<nav id="main-nav">
@@ -80,7 +80,7 @@
 					<input type="hidden" value="${produto.id}" name="produtoId"/>
 					<c:forEach items="${produto.precos }" var="preco">
 						<li class="buy-option" itemprop="offers" itemscope>
-							<input type="radio" name="tipo" class="variant-radio" 
+							<input type="radio" name="tipoPreco" class="variant-radio" 
 								   id="tipo" value="${preco.tipo }" checked />
 							<label itemprop="category" itemscope class="variant-label" >${preco.tipo }</label>
 							<small class="compare-at-price">R$ 39,90</small>
